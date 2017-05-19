@@ -59,7 +59,8 @@ namespace ReactNative.DevSupport
         {
             get
             {
-                return GetSetting(DebugServerHostKey, default(string));
+                //return GetSetting(DebugServerHostKey, default(string));
+                return "172.16.80.1:8081";
             }
             set
             {
