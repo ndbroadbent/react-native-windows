@@ -81,7 +81,7 @@ namespace ReactNative.Views.Web
         [ReactProp("injectedJavaScript")]
         public void SetInjectedJavaScript(WebView view, string injectedJavaScript)
         {
-            _injectedJS[view.GetTag()] = injectedJavaScript;         
+            _injectedJS[view.GetTag()] = injectedJavaScript;
         }
 
         /// <summary>
@@ -110,6 +110,9 @@ namespace ReactNative.Views.Web
                 var uri = source.Value<string>("uri");
                 if (uri != null)
                 {
+                    // HTML files need to be loaded with the ms-appx-web schema.
+                    uri = uri.Replace("ms-appx:", "ms-appx-web:");
+
                     using (var request = new HttpRequestMessage())
                     {
                         request.RequestUri = new Uri(uri);
@@ -156,12 +159,12 @@ namespace ReactNative.Views.Web
                     }
                 }
             }
-            
+
             view.Navigate(new Uri(BLANK_URL));
         }
 
         /// <summary>
-        /// Receive events/commands directly from JavaScript through the 
+        /// Receive events/commands directly from JavaScript through the
         /// <see cref="UIManagerModule"/>.
         /// </summary>
         /// <param name="view">
@@ -189,7 +192,7 @@ namespace ReactNative.Views.Web
         }
 
         /// <summary>
-        /// Called when view is detached from view hierarchy and allows for 
+        /// Called when view is detached from view hierarchy and allows for
         /// additional cleanup by the <see cref="ReactWebViewManager"/>.
         /// </summary>
         /// <param name="reactContext">The React context.</param>
@@ -212,7 +215,7 @@ namespace ReactNative.Views.Web
         }
 
         /// <summary>
-        /// Subclasses can override this method to install custom event 
+        /// Subclasses can override this method to install custom event
         /// emitters on the given view.
         /// </summary>
         /// <param name="reactContext">The React context.</param>
@@ -241,15 +244,15 @@ namespace ReactNative.Views.Web
                         await webView.InvokeScriptAsync("eval", args).AsTask().ConfigureAwait(false);
                     }
                     catch (Exception ex)
-                    {    
+                    {
                         LoadFailed(webView, e.WebErrorStatus, ex.Message);
                     }
-                }  
+                }
             }
             else
             {
                 LoadFailed(webView, e.WebErrorStatus, null);
-            }      
+            }
         }
 
         private static void OnNavigationStarting(object sender, WebViewNavigationStartingEventArgs e)
@@ -262,10 +265,10 @@ namespace ReactNative.Views.Web
                     new WebViewLoadingEvent(
                          webView.GetTag(),
                          "Start",
-                         e.Uri?.ToString(), 
-                         true, 
-                         webView.DocumentTitle, 
-                         webView.CanGoBack, 
+                         e.Uri?.ToString(),
+                         true,
+                         webView.DocumentTitle,
+                         webView.CanGoBack,
                          webView.CanGoForward));
         }
 
