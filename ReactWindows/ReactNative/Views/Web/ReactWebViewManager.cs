@@ -110,6 +110,10 @@ namespace ReactNative.Views.Web
                 var uri = source.Value<string>("uri");
                 if (uri != null)
                 {
+                    // Workaround for bug in react-native-code-push.
+                    // HTML needs to be loaded with ms-appx-web schema.
+                    uri = uri.Replace("ms-appx:", "ms-appx-web:");
+
                     using (var request = new HttpRequestMessage())
                     {
                         request.RequestUri = new Uri(uri);
